@@ -1,0 +1,528 @@
+{
+  "name": "Comunicados Lasalle",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Gmail Trigger').item.json.subject }} \\n{{ $('Gmail Trigger').item.json.text }}",
+        "options": {
+          "systemMessage": "Seu trabalho é gerar comunicados com as informações que chegarem a você. Ao receber uma solicitação utilize a ferramenta nomeada \"Editar documento\" para editar a prancheta de comunicados para que assim nós possámos enviar. \n(Titulo deve ser chamativo, utilize um ou dois emojis apenas no inicio para deixar a mensagem mais amigável para quem lê, por exemplo:) \n📌É AMANHÃ! Acolhida com Pais e Alunos | Educação Infantil\n\n(Descrição do evento,  deve conter todas as informações passadas no email ,exceto lembretes de envio, e com uma linguagem amigável mas formal, utilize alguns emojis em pontos específicos como horários ou avisos em letras maiúsculas quando necessário, utilize negrito apenas quando necessário\nSe preciso você poderá utilizar até dois parágrafos para conter todas as informações.\nPode utilizar listas se necessário. ) \nPrezada família,\n\n📢 É AMANHÃ!\nLembramos que amanhã, 05/03, acontecerá a acolhida com Pais e Alunos da Educação Infantil, no hall da escola (entre a Biblioteca e a Brinquedoteca), nos seguintes horários:\n🕖 07h10 – turno matutino\n🕐 13h15 – turno vespertino\nContamos com sua presença para este momento especial de acolhida e reflexão junto às nossas crianças.\nAtenciosamente,\nColégio La Salle\n\nNão crie autorizações.\nCaso o email contenha algo sobre data de envio, não coloque essa data no comunicado.\n\nUtilize APENAS informações contidas nos emails de comunicados para gerar os comunicados.",
+          "maxIterations": 1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        848,
+        -448
+      ],
+      "id": "25f7b4f7-5a37-423b-bc7d-ee68e774e81e",
+      "name": "AI Agent",
+      "executeOnce": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -80,
+        32
+      ],
+      "id": "b22773c0-095f-4898-8407-a31af537d508",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "mistral-medium",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -224
+      ],
+      "id": "4e6dcfa2-af23-45f4-9933-ac3f8193fd48",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "7hV2ek8U0pFrxptD",
+          "name": "NathalIA"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "suporte.te@lasalle.org.br",
+        "subject": "Bilhete feito e aguardando ser postado!",
+        "emailType": "text",
+        "message": "=O comunicado vindo da solicitação \"{{ $('Gmail Trigger').item.json.subject }}\" está pronto e aguarda ser postado",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1376,
+        -448
+      ],
+      "id": "186741d7-e6cf-4dcb-b8b6-20f550abbe41",
+      "name": "Envia confirmação",
+      "webhookId": "db0f03ca-e953-41e8-95a4-816c05beda96",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1152,
+        -448
+      ],
+      "id": "fda3a04d-4d8e-4620-8ac3-95cc022118b6",
+      "name": "Marca a mensagem original como lida",
+      "webhookId": "e5f9c90c-2ebb-49fd-b90a-cbbdf7bf1823",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "augusto.couto@lasalle.org.br",
+        "subject": "Bilhete feito e aguardando ser postado!",
+        "emailType": "text",
+        "message": "=O comunicado vindo da solicitação \"{{ $('Gmail Trigger').item.json.subject }}\" está pronto e aguarda ser postado",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        -448
+      ],
+      "id": "3c45a095-0e90-4f9f-97f6-42b2ce9172cd",
+      "name": "Envia confirmação1",
+      "webhookId": "db0f03ca-e953-41e8-95a4-816c05beda96",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Gmail Trigger').item.json.id }}",
+        "contextWindowLength": 2
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        -224
+      ],
+      "id": "655447f6-f806-4e6d-8fab-066e3c3b8f35",
+      "name": "Simple Memory",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Atualiza o comunicado oficial no Google Docs.\n\nUse esta ferramenta somente quando o email for um comunicado, card ou bilhete.\n\nCampo obrigatório:\n- actionFields0_Text: texto completo do comunicado formatado.\n\nDepois de atualizar o documento, a tarefa está concluída. Não utilize nenhuma outra ferramenta.",
+        "operation": "update",
+        "documentURL": "https://docs.google.com/document/d/12JHS4w2z079PmVJZAfyOSxjYk3_DNqa_e3Jz5eBMZgI/edit?tab=t.0",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $fromAI('actionFields0_Text', ``, 'string') }}"
+            },
+            {
+              "object": "pageBreak",
+              "action": "insert"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        1088,
+        -240
+      ],
+      "id": "73c04c22-cc9d-4e81-8be4-5d5661dcc992",
+      "name": "Editar documento",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "BKHcqKp702W0LX7b",
+          "name": "Docs automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "renatta.silva@lasalle.org.br",
+        "subject": "Bilhete feito e aguardando ser postado!",
+        "emailType": "text",
+        "message": "=O comunicado vindo da solicitação \"{{ $('Gmail Trigger').item.json.subject }}\" está pronto e aguarda ser postado",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1776,
+        -448
+      ],
+      "id": "70b1fdcb-89ee-441c-a7f2-672307daed3a",
+      "name": "Envia confirmação2",
+      "webhookId": "db0f03ca-e953-41e8-95a4-816c05beda96",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ [\"comunicado\",\"card\",\"bilhete\",\"comunicados\",\"cards\",\"bilhetes\"].some(p => $json.subject.toLowerCase().includes(p)) }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "id": "541bc486-e0fd-41f5-80ba-b7c882eeb949"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Bilhetes"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0e81f96e-2675-4d18-9b2e-4853fd5e2e5a",
+                    "leftValue": "={{ [\"compra\",\"compras\",\"material\",\"materiais\"].some(p => $json.subject.toLowerCase().includes(p)) }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Compras"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        16
+      ],
+      "id": "f977a2c7-49ad-445f-9c8f-57277e92a43e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        368
+      ],
+      "id": "9fb448cb-5163-448f-9b33-09f8a2ebae19",
+      "name": "Marca a mensagem original como lida1",
+      "webhookId": "e5f9c90c-2ebb-49fd-b90a-cbbdf7bf1823",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        64
+      ],
+      "id": "1ddc55e2-8523-49c0-8333-d52838df6e94",
+      "name": "Marca a mensagem original como lida2",
+      "webhookId": "e5f9c90c-2ebb-49fd-b90a-cbbdf7bf1823",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ScNUlRMiEfGj2BTi",
+          "name": "Gmail automaca"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "dc59f962-2cbf-4a03-9798-40688717851f",
+              "leftValue": "={{\n  !($json.subject || \"\").startsWith(\"Re: \")\n}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        112,
+        32
+      ],
+      "id": "10213503-0b14-48ff-9aaa-965ff418cdfb",
+      "name": "Verifica se o email não é uma resposta"
+    },
+    {
+      "parameters": {
+        "content": "Bloco de automação de comunicados",
+        "height": 560,
+        "width": 1280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        736,
+        -592
+      ],
+      "typeVersion": 1,
+      "id": "70c73af4-37b0-40f8-a0b2-17fe813955bb",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Marca a mensagem original como lida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Verifica se o email não é uma resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia confirmação": {
+      "main": [
+        [
+          {
+            "node": "Envia confirmação1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marca a mensagem original como lida": {
+      "main": [
+        [
+          {
+            "node": "Envia confirmação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Editar documento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envia confirmação1": {
+      "main": [
+        [
+          {
+            "node": "Envia confirmação2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marca a mensagem original como lida2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marca a mensagem original como lida1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica se o email não é uma resposta": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marca a mensagem original como lida1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "timezone": "America/Halifax",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "50b75299-01bf-43e4-bcf0-e1fd7fc4de04",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8407459b78892d4d9a898b8e3c0d303c93b944a619eebe8e33895cb1821ee6fd"
+  },
+  "id": "yZSeSv83tNx0aMnL",
+  "tags": []
+}
